@@ -1,11 +1,23 @@
 import React from 'react';
-import MealsList from '../components/MealsList';
+import { View,Text,StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux';
 
-import { MEALS, CATEGORIES } from '../data/dummy-data';
+import MealsList from '../components/MealsList';
+import { CATEGORIES } from '../data/dummy-data';
+
 
 const CategoryMealsScreen = props => {
   const catId = props.navigation.getParam('categoryId');
-  const displayedMeals = MEALS.filter(eachMeal => eachMeal.categoryIds.indexOf(catId) >= 0)
+  const filteredMeals = useSelector(state => state.meals.filteredMeals)
+  const displayedMeals = filteredMeals.filter(eachMeal => eachMeal.categoryIds.indexOf(catId) >= 0)
+
+  if(displayedMeals.length===0){
+    return(
+      <View style={styles.content}>
+        <Text>Based on your filters, there are no meals to show in this category...</Text>
+      </View>
+    )
+  }
 
   return (
     <MealsList listData={displayedMeals} navigation={props.navigation}/>
@@ -19,5 +31,13 @@ CategoryMealsScreen.navigationOptions = (navigationData) => {
     headerTitle: selectedCat.title
   }
 }
+
+const styles = StyleSheet.create({
+  content: {
+    flex:1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  }
+})
 
 export default CategoryMealsScreen;

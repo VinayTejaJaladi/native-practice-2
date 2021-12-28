@@ -1,9 +1,12 @@
 import React from 'react';
 import { FlatList, View, StyleSheet } from 'react-native';
+import { useSelector } from 'react-redux';
 import MealItem from './MealItem';
 
 const MealsList = props => {
+    const favouriteMeals = useSelector(state => state.meals.favouriteMeals);
     const renderMealItem = (itemData) => {
+        const isCurrentMealFav = favouriteMeals.some(meal => meal.id===itemData.item.id);
         return (
             <MealItem
                 title={itemData.item.title}
@@ -12,7 +15,11 @@ const MealsList = props => {
                 affordability={itemData.item.affordability}
                 imageUrl={itemData.item.imageUrl}
                 onSelectMeal={() => {
-                    props.navigation.navigate('MealDetail', { mealId: itemData.item.id })
+                    props.navigation.navigate('MealDetail', { 
+                        mealId: itemData.item.id, 
+                        mealTitle: itemData.item.title, 
+                        isFav:isCurrentMealFav 
+                    })
                 }}
             />
         )
